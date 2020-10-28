@@ -1,0 +1,73 @@
+h1. STFT_FREQ - Frequency estimation using STFT
+--------------------
+
+STFT_FREQ is a C application for frequency estimation in audio files. It calculates a Short Time Forier Transform ("STFT":https://en.wikipedia.org/wiki/Short-time_Fourier_transform) and picks the most promenten bin within a frequency region of interest. It subsequently refines the frequency estimation using parabolic interpolation. It prints out the estimated frequency together with the magnitude of the frequency FFT bin.
+
+h2. Why STFT_FREQ?
+
+Most speech or music frequency estimators need relatively large FFT windows to allow precise frequency estimation. The assumption for speech and music is that frequency changes relatively slowly. For birdsong this assumption might not hold. In the example below a fast change is shown.
+
+!./doc/stft_example_finch.png(Finch birdsong analysis)!
+
+h2. STFT_FREQ requirements
+
+To use stft_freq @ffmpeg@ and @ruby@ need to be installed on your system. While the core of stft_freq is in pure c, a Ruby script provides an easy to use interface to its capabilities. The Ruby script converts audio (with ffmpeg), parses command line arguments and reports results in a readable format.
+
+To install ffmpeg and ruby on a Debian like system:
+
+<pre>
+apt-get install ffmpeg ruby
+</pre>
+
+On macOS ruby is available by default and @ffmpeg@ can be installed with "homebrew":https://brew.sh/
+
+<pre>
+brew install ffmpeg 
+</pre>
+
+h2. Compilation and installation of stft_freq
+
+To compile use toffolwing commands. By default the makefile uses gcc set to the C11 standard. It should be possible to use other compilers compliant with the C11 standard as well. So either make sure gcc is installed correctly or modify the Makefile for your compiler of choice. Compilation and installation:
+
+<pre>
+make
+make install
+</pre>
+
+
+h2. STFT_FREQ Usage
+
+After a successfull installation of stft_freq on your path calling the program should be as simple as
+
+<pre>
+stft_freq audio.mp3
+</pre>
+
+To import the results in Sonic Visualizer save the result to a csv file. Import out.csv into sonic visualiser with the first column the time in seconds and the second column the value. It might be of interest to filter out the fft bins with a low magnitude.
+
+<pre>
+stft_freq audio.mp3 > out.csv
+</pre>
+
+The c application can be used directly as well with correctly converted RAW files:
+
+<pre>
+	stft_freq audio_sr block_size step_size min_freq max_freq audio_file.raw
+</pre>
+
+
+
+h2. Further Reading
+
+The parabolic interpolation and windowing function is described here:
+
+Gasior, M., and J. L. Gonzalez. "Improving FFT frequency measurement resolution by parabolic and gaussian interpolation":http://cds.cern.ch/record/720344/files/ab-note-2004-021.pdf. No. AB-Note-2004-021. CERN-AB-Note-2004-021, 2004.
+
+h2. Credits
+
+Parts of the code are reused from "Olaf":https://github.com/JorenSix/Olaf .
+
+STFTF_freq by Joren Six at IPEM, Ghent University.
+
+
+
